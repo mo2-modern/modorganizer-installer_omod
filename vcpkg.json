@@ -8,7 +8,7 @@
   "vcpkg-configuration": {
     "default-registry": {
       "kind": "git",
-      "repository": "https://github.com/ModOrganizer2/vcpkg-registry",
+      "repository": "https://github.com/mo2-modern/vcpkg-registry",
       "baseline": "8beb2e0efa9c17dd6d17bb05288dd1e40727f673"
     }
   }
