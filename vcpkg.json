@@ -9,7 +9,7 @@
     "default-registry": {
       "kind": "git",
       "repository": "https://github.com/mo2-modern/vcpkg-registry",
-      "baseline": "1316300c059f9dc6eddbdd19c57d3415a1779fee"
+      "baseline": "a71daa8718305d3d4f6e7fad955f2f1f2bb6c1be"
     }
   }
 }
