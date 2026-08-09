@@ -12,6 +12,14 @@ set_target_properties(dummy_cs_project PROPERTIES
 	VS_PACKAGE_REFERENCES "OMODFramework_2.2.2;OMODFramework.Scripting_2.2.2;RtfPipe_1.0.7388.1242"
 )
 
+# Only dummy_cs_project uses NuGet (via VS_PACKAGE_REFERENCES above); installer_omod
+# references the resulting DLLs by path via VS_DOTNET_REFERENCE_*. CMake >= 4.x emits
+# <target>_autogen* helper projects for the VS generator, and those inherit the global
+# CMAKE_DOTNET_TARGET_FRAMEWORK_VERSION from ../CMakeLists.txt, so MSBuild runs
+# Microsoft.NuGet.targets on them. They have no NuGet lock file, so the build fails with
+# "Sequence contains no elements". Set after dummy_cs_project so it keeps NuGet.
+set(CMAKE_VS_GLOBALS "ResolveNuGetPackages=false")
+
 add_library(installer_omod SHARED)
 mo2_configure_plugin(installer_omod WARNINGS OFF CLI ON)
 target_link_libraries(installer_omod PRIVATE mo2::uibase)
