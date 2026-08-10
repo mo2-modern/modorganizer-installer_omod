@@ -8,8 +8,10 @@ namespace Dummy
     {
         static void Stub2()
         {
-            OMOD omod = null;
-            IScriptFunctions scriptFunctions = null;
+            // Discards, not locals: assigning to an unused local is CS0219. typeof
+            // still anchors the assembly reference, which is this stub's only job.
+            _ = typeof(OMOD);
+            _ = typeof(IScriptFunctions);
             Rtf.ToHtml("");
         }
     }

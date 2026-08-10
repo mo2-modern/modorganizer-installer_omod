@@ -36,7 +36,10 @@ set(omod_framework_prefix "${CMAKE_BINARY_DIR}/$(Configuration)"
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
 	COMMON_LANGUAGE_RUNTIME ""
-	# latest may not work with CLR
+	# C++20 is a hard ceiling under /clr, not a preference: cl.exe rejects anything
+	# newer with "warning C4857: C++/CLI mode does not support C++ versions newer
+	# than C++20; setting language to /std:c++20" -- it downgrades silently and adds
+	# a warning. Do NOT raise this to 23 to match the rest of the tree.
 	CXX_STANDARD 20
 	#DOTNET_TARGET_FRAMEWORK "netstandard2.0"
 	VS_DOTNET_REFERENCE_OMODFramework "${omod_framework_prefix}/OMODFramework.dll"
@@ -49,7 +52,12 @@ target_compile_options(
 	installer_omod
 	PRIVATE
 	# OMODFramework and OMODFramework.Scripting reference different .NET standard libraries. This generates warnings when using them together.
-	"/wd4691")
+	"/wd4691"
+	# Qt forward-declares QThread, and under /clr an incomplete native type reaching
+	# managed metadata emits "LNK4248: unresolved typeref token ... image may not run"
+	# in every TU that touches it. Force the complete definition in; a plain include
+	# in the three affected sources would have to be repeated for each new one.
+	"/FIQThread")
 
 # We don't want ERROR defined
 target_compile_definitions(installer_omod PRIVATE "NOGDI")
