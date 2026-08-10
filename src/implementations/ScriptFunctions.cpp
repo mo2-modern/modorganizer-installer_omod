@@ -196,18 +196,18 @@ void ScriptFunctions::DisplayText(System::String^ text, System::String^ title)
   mHelper->DisplayText(mParentWidget, toQString(text), toQString(title));
 }
 
-void ScriptFunctions::Patch(System::String^ from, System::String^ to)
+void ScriptFunctions::Patch(System::String^, System::String^)
 {
   throw gcnew System::NotImplementedException();
 }
 
-System::String^ ScriptFunctions::ReadOblivionINI(System::String^ section, System::String^ name)
+System::String^ ScriptFunctions::ReadOblivionINI(System::String^, System::String^)
 {
   throw gcnew System::NotImplementedException();
   // TODO: implement this if a user ever reports the exception. OMODFramework should be handling this for us.
 }
 
-System::String^ ScriptFunctions::ReadRendererInfo(System::String^ name)
+System::String^ ScriptFunctions::ReadRendererInfo(System::String^)
 {
   throw gcnew System::NotImplementedException();
   // TODO: implement this if a user ever reports the exception. OMODFramework should be handling this for us.
@@ -301,19 +301,19 @@ System::Collections::Generic::IEnumerable<System::String^>^ ScriptFunctions::Get
   // TODO: implement this if a user ever reports the exception. No known OMODs seem to actually use this (which is irritating as this is one of OBMM's most powerful features).
 }
 
-cli::array<unsigned char, 1>^ ScriptFunctions::ReadExistingDataFile(System::String^ file)
+cli::array<unsigned char, 1>^ ScriptFunctions::ReadExistingDataFile(System::String^)
 {
   throw gcnew System::NotImplementedException();
   // TODO: implement this if a user ever reports the exception. OMODFramework should be handling this for us.
 }
 
-cli::array<unsigned char, 1>^ ScriptFunctions::GetDataFileFromBSA(System::String^ file)
+cli::array<unsigned char, 1>^ ScriptFunctions::GetDataFileFromBSA(System::String^)
 {
   throw gcnew System::NotImplementedException();
   // TODO: implement this if a user ever reports the exception. OMODFramework should be handling this for us.
 }
 
-cli::array<unsigned char, 1>^ ScriptFunctions::GetDataFileFromBSA(System::String^ bsa, System::String^ file)
+cli::array<unsigned char, 1>^ ScriptFunctions::GetDataFileFromBSA(System::String^, System::String^)
 {
   throw gcnew System::NotImplementedException();
   // TODO: implement this if a user ever reports the exception. OMODFramework should be handling this for us.

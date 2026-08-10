@@ -21,7 +21,7 @@ set_target_properties(dummy_cs_project PROPERTIES
 set(CMAKE_VS_GLOBALS "ResolveNuGetPackages=false")
 
 add_library(installer_omod SHARED)
-mo2_configure_plugin(installer_omod WARNINGS OFF CLI ON)
+mo2_configure_plugin(installer_omod WARNINGS 4 CLI ON WERROR ON)
 target_link_libraries(installer_omod PRIVATE mo2::uibase)
 
 # I'd like to use get_target_property(source_files ${PROJECT_NAME} SOURCES) as

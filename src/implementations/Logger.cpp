@@ -39,7 +39,7 @@ void Logger::Init()
     //no op
 }
 
-void Logger::Log(OMODFramework::LoggingLevel level, System::String^ message, System::DateTime time)
+void Logger::Log(OMODFramework::LoggingLevel level, System::String^ message, System::DateTime)
 {
   MOBase::log::getDefault().log(MOLoggingLevel(level), "{}", toUTF8String(message));
 }

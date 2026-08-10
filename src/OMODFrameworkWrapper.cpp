@@ -62,7 +62,7 @@ class AssemblyResolver
 public:
   static bool getInitialised() { return sInitialised; }
 
-  static void initialise(MOBase::IOrganizer* organizer)
+  static void initialise()
   {
     if (sInitialised)
       return;
@@ -81,7 +81,7 @@ private:
 bool AssemblyResolver::sInitialised = false;
 QDir AssemblyResolver::sPluginDataPath;
 
-System::Reflection::Assembly^ AssemblyResolver::OnAssemblyResolve(System::Object^ sender, System::ResolveEventArgs^ args)
+System::Reflection::Assembly^ AssemblyResolver::OnAssemblyResolve(System::Object^, System::ResolveEventArgs^ args)
 {
   QString name = toQString(args->Name).section(',', 0, 0) + ".dll";
   if (sPluginDataPath.exists(name))
@@ -96,7 +96,7 @@ OMODFrameworkWrapper::OMODFrameworkWrapper(MOBase::IOrganizer* organizer, QWidge
 {
   try
   {
-    AssemblyResolver::initialise(mMoInfo);
+    AssemblyResolver::initialise();
 
     constructorHelper();
 
@@ -108,7 +108,7 @@ OMODFrameworkWrapper::OMODFrameworkWrapper(MOBase::IOrganizer* organizer, QWidge
 
     initFrameworkSettings();
   }
-  catch (const std::exception& e)
+  catch (const std::exception&)
   {
     throw;
   }
@@ -225,7 +225,7 @@ private:
   T mOnExit;
 };
 
-OMODFrameworkWrapper::EInstallResult OMODFrameworkWrapper::install(MOBase::GuessedValue<QString>& modName, QString gameName, const QString& archiveName, const QString& version, int nexusID)
+OMODFrameworkWrapper::EInstallResult OMODFrameworkWrapper::install(MOBase::GuessedValue<QString>& modName, QString, const QString& archiveName, const QString&, int nexusID)
 {
   try
   {
@@ -350,7 +350,7 @@ OMODFrameworkWrapper::EInstallResult OMODFrameworkWrapper::install(MOBase::Guess
               continue;
             }
 
-            QMessageBox::StandardButton response;
+            QMessageBox::StandardButton response = QMessageBox::NoButton;
             if (!yesToAll)
             {
               QString message;
@@ -522,7 +522,7 @@ OMODFrameworkWrapper::EInstallResult OMODFrameworkWrapper::install(MOBase::Guess
     }
     return EInstallResult::RESULT_SUCCESS;
   }
-  catch (const std::exception& e)
+  catch (const std::exception&)
   {
     throw;
   }
@@ -575,7 +575,7 @@ void OMODFrameworkWrapper::onInstallationEnd(EInstallResult status, MOBase::IMod
       MOBase::IPluginList::PluginStates oldState = mMoInfo->pluginList()->state(plugin);
       MOBase::log::debug("OMOD wants to activate {}, was {}", plugin, pluginStateNames[oldState]);
 
-      QMessageBox::StandardButton response;
+      QMessageBox::StandardButton response = QMessageBox::NoButton;
       if (!yesToAll)
       {
         QString message;
@@ -618,7 +618,7 @@ void OMODFrameworkWrapper::onInstallationEnd(EInstallResult status, MOBase::IMod
       MOBase::IPluginList::PluginStates oldState = mMoInfo->pluginList()->state(plugin);
       MOBase::log::debug("OMOD installed {}, but didn't try and activate it. State was {}", plugin, pluginStateNames[oldState]);
 
-      QMessageBox::StandardButton response;
+      QMessageBox::StandardButton response = QMessageBox::NoButton;
       if (!yesToAll)
       {
         QString message;

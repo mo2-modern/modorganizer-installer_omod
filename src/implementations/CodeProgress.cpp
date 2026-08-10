@@ -55,7 +55,7 @@ void CodeProgress::Init(__int64 totalSize, bool compressing)
   mHelper->ShowProgressDialog();
 }
 
-void CodeProgress::SetProgress(__int64 inSize, __int64 outSize)
+void CodeProgress::SetProgress(__int64 inSize, __int64)
 {
   int newPercentage = (int)(100 * inSize / (double)mTotalSize);
   if (newPercentage != mPercentage)
