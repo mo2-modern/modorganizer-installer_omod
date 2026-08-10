@@ -30,6 +30,10 @@
         "INSTALL_REQUIRES_VS_PACKAGE_RESTORE": {
           "type": "BOOL",
           "value": "ON"
+        },
+        "VCPKG_TARGET_TRIPLET": {
+          "type": "STRING",
+          "value": "x64-windows-static-md"
         }
       },
       "generator": "Visual Studio 18 2026",

@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.23)
 
 find_package(mo2-cmake CONFIG REQUIRED)
 find_package(mo2-uibase CONFIG REQUIRED)
+find_package(spdlog CONFIG REQUIRED)
 
 # Dummy .NET library as VS_PACKAGE_REFERENCES doesn't work on C++/CLI projects yet
 # Needs to be declared before cmake_common stuff is included as that polutes the environment and makes C# get compiled as C++
@@ -22,7 +23,16 @@ set(CMAKE_VS_GLOBALS "ResolveNuGetPackages=false")
 
 add_library(installer_omod SHARED)
 mo2_configure_plugin(installer_omod WARNINGS 4 CLI ON WERROR ON)
-target_link_libraries(installer_omod PRIVATE mo2::uibase)
+# spdlog::spdlog, NOT spdlog::spdlog_header_only -- the distinction is the whole fix.
+# uibase's public log.h forward-declares spdlog::logger while holding a
+# std::unique_ptr<spdlog::logger>, and /clr cannot put an incomplete native type into
+# managed metadata (LNK4248). Completing the type needs spdlog's headers, but the
+# header-only target additionally pulls the *-inl.h implementation headers, which use
+# thread_local -- illegal in managed code (C2482/C2483). The compiled-lib target
+# defines SPDLOG_COMPILED_LIB, so logger.h stops at the class definition. Layout is
+# identical between the two modes: logger's members vary only on
+# SPDLOG_USE_STD_FORMAT (both define it) and SPDLOG_WCHAR_TO_UTF8_SUPPORT (neither).
+target_link_libraries(installer_omod PRIVATE mo2::uibase spdlog::spdlog)
 
 # I'd like to use get_target_property(source_files ${PROJECT_NAME} SOURCES) as
 # globbing is naughty, but need to filter out the things that aren't relative to this directory.
@@ -57,7 +67,9 @@ target_compile_options(
 	# managed metadata emits "LNK4248: unresolved typeref token ... image may not run"
 	# in every TU that touches it. Force the complete definition in; a plain include
 	# in the three affected sources would have to be repeated for each new one.
-	"/FIQThread")
+	"/FIQThread"
+	# Same story for spdlog::logger, reached through uibase's public log.h.
+	"/FIspdlog/logger.h")
 
 # We don't want ERROR defined
 target_compile_definitions(installer_omod PRIVATE "NOGDI")
