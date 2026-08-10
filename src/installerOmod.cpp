@@ -138,7 +138,11 @@ void InstallerOMOD::buildSDPs()
     QMap<QByteArray, QByteArray> shaders;
     {
       QFile packageFile(packagePath);
-      packageFile.open(QIODevice::ReadOnly);
+      if (!packageFile.open(QIODevice::ReadOnly))
+      {
+        MOBase::log::warn("Could not read the SDP {}: {}", packagePath, packageFile.errorString());
+        continue;
+      }
       QDataStream basePackageStream(&packageFile);
       basePackageStream.setByteOrder(QDataStream::LittleEndian);
       quint32 magic;
@@ -168,14 +172,23 @@ void InstallerOMOD::buildSDPs()
       QFileInfo info(shaderFile);
       QByteArray shaderName = (info.baseName().toUpper() + "." + info.suffix().toLower()).toLatin1();
       QFile file(shaderFile);
-      file.open(QIODevice::ReadOnly);
+      if (!file.open(QIODevice::ReadOnly))
+      {
+        // readAll() would give an empty QByteArray, silently replacing the shader with nothing
+        MOBase::log::warn("Could not read the replacement shader {}: {}", shaderFile, file.errorString());
+        continue;
+      }
       shaderName = shaderName.leftJustified(256, '\0', true);
       shaders[shaderName] = file.readAll();
       MOBase::log::debug("Replacement for {} was {} bytes long", shaderFile, shaders[shaderName].size());
     }
 
     std::unique_ptr<QTemporaryFile> outputFile = std::make_unique<QTemporaryFile>();
-    outputFile->open();
+    if (!outputFile->open())
+    {
+      MOBase::log::warn("Could not create a temporary SDP for shader package {}: {}", directory, outputFile->errorString());
+      continue;
+    }
     QDataStream packageStream(outputFile.get());
     packageStream.setByteOrder(QDataStream::LittleEndian);
     packageStream << quint32(100) << quint32(shaders.count());
